@@ -5,7 +5,9 @@
 # pylint: disable=trailing-whitespace
 
 def _parse_mnemonic(mnemonic: str, data_map: dict[str, str]) -> str:
-    return data_map.get(mnemonic, 'error')
+    if mnemonic in data_map:
+        return data_map.get(mnemonic, '')
+    raise ValueError(f'Invalid mnemonic: {mnemonic}')
 
 def binary_comp(mnemonic: str) -> str:   
     comp_map = {

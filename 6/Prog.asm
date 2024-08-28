@@ -1,45 +1,29 @@
-// This program runs an infinite loop that listens to the keyboard input.
-// When a key is pressed (any key), the program blackens the screen, namely, writes “black” in every pixel.
-// When no key is pressed, the screen should be cleared. You may choose to blacken and clear the screen in
-// any spatial order, as long as pressing a key continuously for long enough will result in a fully blackened
-// screen and not pressing any key for long enough will result in a cleared screen. This program has a test
-// script (Fill.tst) but no compare file—it should be checked by visibly inspecting the simulated screen.
-(LOOP_KEYBOARD)
-    @24575  // Last pixel cell - bottom right of the screen
-    D=A
-    @i     // Set 24575 as start value of i
-    M=D
-    @KBD
-    D=M
-    @LOOP_SCREEN_BLACK
-    D;JGT   // If a key is pressed, D would be != 0
-    @LOOP_SCREEN_WHITE
+// The inputs of this program are the current values stored in R0 and
+// R1 (i.e., the two top RAM locations). The program computes the product R0*R1 and stores the result in
+// R2. We assume (in this program) that R0>=0, R1>=0, and R0*R1<32768. Your program need not test
+// these conditions, but rather assume that they hold. The supplied Mult.tst and Mult.cmp scripts will test
+// your program on several representative data values.
+    @0      // Carica l'indirizzo di RAM[0], il secondo fattore
+    D=M     // Salvo il valore di RAM[0] in D
+    @END
+    D;JEQ   // Se RAM[0] = 0, termina
+    @a
+    M=D     // a = RAM[0]
+    @i      // contatore
+    M=D     // i = a
+(LOOP)
+    @i
+    D=M     // D = i
+    @END
+    D;JEQ   //If i = 0 goto END
+    @1
+    D=M     // D = RAM[1]
+    @2
+    M=M+D
+    @i
+    M=M-1   //i--
+    @LOOP
     0;JMP
-
-(LOOP_SCREEN_BLACK)
-    @i
-    A=M
-    M=-1    // Blank the cell of position i
-    @i
-    M=M-1   // Decrement i
-    D=M
-    @SCREEN // Index of first pixel - top left of the screen
-    D=D-A   // Calculate i - first cell, if < 0 it means i reached all the pixels and exit the loop
-    @LOOP_SCREEN_BLACK
-    D;JGE
-    @LOOP_KEYBOARD
-    0;JMP
-
-(LOOP_SCREEN_WHITE)
-    @i
-    A=M
-    M=0    // Clear the cell of position i
-    @i
-    M=M-1   // Decrement i
-    D=M
-    @SCREEN // Index of first pixel - top left of the screen
-    D=D-A   // Calculate i - first cell, if < 0 it means i reached all the pixels and exit the loop
-    @LOOP_SCREEN_WHITE
-    D;JGE
-    @LOOP_KEYBOARD
+(END)
+    @END
     0;JMP

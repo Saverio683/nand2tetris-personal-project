@@ -23,14 +23,17 @@ def main():
         z = 1
 
         while z >= 0:
-            match parser.command_type():
-                case 'L_COMMAND':
-                    symbol = parser.symbol()
-                    if not symbol_table.contains(symbol):
-                        symbol_table.add_entry(symbol, i)
-                case _:
-                    i += 1 
-
+            try:
+                match parser.command_type():
+                    case 'L_COMMAND':
+                        symbol = parser.symbol()
+                        if not symbol_table.contains(symbol):
+                            symbol_table.add_entry(symbol, i)
+                    case _:
+                        i += 1 
+            except ValueError as err:
+                print(err)
+                return
             if z > 0:      
                 parser.advance()
             if not parser.has_more_commands():
@@ -44,9 +47,13 @@ def main():
         while z >= 0:
             match parser.command_type():
                 case 'C_COMMAND':
-                    dest = binary_dest(parser.dest())
-                    comp = binary_comp(parser.comp())
-                    jump = binary_jump(parser.jump())
+                    try:
+                        dest = binary_dest(parser.dest())
+                        comp = binary_comp(parser.comp())
+                        jump = binary_jump(parser.jump())
+                    except (ValueError, AssertionError) as err:
+                        print(err)
+                        return
                     new_file.append('111'+comp+dest+jump)
                 case 'A_COMMAND':
                     symbol = parser.symbol()

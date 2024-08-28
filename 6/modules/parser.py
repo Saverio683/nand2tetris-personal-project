@@ -23,7 +23,9 @@ class Parser:
             return 'A_COMMAND'
         if '(' in self.current_command and ')' in self.current_command:
             return 'L_COMMAND'
-        return 'C_COMMAND'
+        if '=' in self.current_command or ';' in self.current_command:
+            return 'C_COMMAND'
+        raise ValueError(f'Invalid command: {self.current_command}')
     
     def advance(self) -> None:
         self.current_command = self.file.pop(0)
@@ -39,7 +41,7 @@ class Parser:
         result = 'null'
         if '=' in self.current_command:
             result = self.current_command.split('=',1)[0]
-            assert result in possible_destinations, 'invalid qualcosa'
+            assert result in possible_destinations, f'Invalid destination: {result}'
         return result
     
     def comp(self) -> str:
@@ -50,7 +52,7 @@ class Parser:
             result = self.current_command.split('=',1)[1]
         else:
             result = self.current_command.split(';',1)[0]
-        assert result in possible_computations, 'invalid qualcosa'
+        assert result in possible_computations, f'Invalid computation: {result}'
         return result
     
     def jump(self) -> str:
@@ -58,7 +60,7 @@ class Parser:
         result = 'null'
         if ';' in self.current_command:
             result = self.current_command.split(';',1)[1]
-            assert result in possible_jumps, 'invalid qualcosa'
+            assert result in possible_jumps, f'Invalid jump: {result}'
         return result
 
     def __clean(self) -> None:
