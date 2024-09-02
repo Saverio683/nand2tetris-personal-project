@@ -35,7 +35,9 @@ class SymbolTable:
             'KBD': 24576
         }
 
-    def add_entry(self, symbol, address: int = first_avaiable_address) -> None:
+    def add_entry(self, symbol, address = None) -> None:
+        if address is None:
+            address = self.first_avaiable_address
         self.new_variables[symbol] = address
         self.first_avaiable_address += 1
 
