@@ -69,4 +69,4 @@ class Parser:
             self.current_command = self.current_command.split('//', 1)[0]
         if len(self.current_command) < 1:
             self.advance()
-            self.__clean()        
+            self.__clean() 
